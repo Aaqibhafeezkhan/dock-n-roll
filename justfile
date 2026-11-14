@@ -141,10 +141,20 @@ merge pr:
 # ~/.tool-versions under --no-global, so the recipe keeps the mise.toml rows and fails on a
 # non-empty report (`--bump`: without it exact pins report nothing; Node is pinned to 22 on purpose,
 # so its row is dropped, like pnpm's, which follows package.json#packageManager).
-# L3 — nightly (systemd timer): check + Trivy fs + TruffleHog + toolchain drift
-nightly: check
-    trivy fs --exit-code 1 --severity HIGH,CRITICAL --skip-dirs node_modules,dist,out,coverage,.claude .
-    trufflehog git "file://$PWD" --no-verification --fail --no-update --exclude-paths .trufflehog-exclude
-    out=$(mise outdated --bump --no-global --no-header) || { echo "nightly: mise outdated failed" >&2; exit 1; }; \
-    drift=$(printf '%s\n' "$out" | grep -F mise.toml | grep -vE '^(node|pnpm) ' || true); \
-    [ -z "$drift" ] || { echo "nightly: toolchain drift, bump mise.toml:"; echo "$drift"; exit 1; }
+# L3 — nightly (systemd timer, clean origin/main worktree, agents-skills#427): only a vulnerability
+# (Trivy fs) or a secret (TruffleHog) fails it; `just check` and toolchain drift warn.
+nightly:
+    #!/bin/sh
+    set -u
+    rc=0
+    warn() { "$@" || echo "WARNING nightly: $* failed (drift, not a failure)"; }
+    drift() {
+        out=$(mise outdated --bump --no-global --no-header) || return 1
+        d=$(printf '%s\n' "$out" | grep -F mise.toml | grep -vE '^(node|pnpm) ' || true)
+        [ -z "$d" ] || { echo "toolchain drift, bump mise.toml:"; echo "$d"; return 1; }
+    }
+    warn just check
+    trivy fs --exit-code 1 --severity HIGH,CRITICAL --skip-dirs node_modules,dist,out,coverage,.claude . || rc=1
+    trufflehog git "file://$PWD" --no-verification --fail --no-update --exclude-paths .trufflehog-exclude || rc=1
+    warn drift
+    exit "$rc"
