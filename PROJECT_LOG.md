@@ -626,3 +626,8 @@ Sensitivity: C and A stay top two and G last under value 45 or effort 35; E pass
 - The nightly of 2026-11-13 failed twice: `no justfile found` (checkout 7 commits behind, now up to date) and `@vitest/coverage-v8` missing (stale `node_modules`, `pnpm install`). A third failure remained: `mise outdated` reported typos 1.52.0 → 1.52.2.
 - Bumped `mise.toml` and `mise.lock`. Exception to the 5-day cooldown (release 2 days old), accepted by the owner: the nightly blocks on drift, the seven lock checksums match the upstream release, typos is a dev-only linter.
 - Follow-up: the nightly drift check fails on day-0 releases, against the cooldown; rule to write for the mise toolchain.
+
+## 2026-11-15 — nightly on a clean origin/main worktree (#123)
+
+- Applied agents-skills#427 (skill local-ci rule 9, § L3 step 4): the unit no longer runs in the working checkout (behind origin/main on 2026-11-13, stale `node_modules`) but in `~/.cache/nightly/dock-n-roll`, a detached worktree of origin/main fetched, reset, cleaned and `pnpm install --frozen-lockfile`d before each run.
+- `just nightly` is now a `/bin/sh` script: only vulnerabilities (`pnpm audit`, Trivy fs) and secrets (gitleaks, TruffleHog) fail it; `just check` and the mise toolchain drift print `WARNING nightly: …` (closes the day-0 release vs cooldown follow-up of #121).
