@@ -1,6 +1,6 @@
 #!/bin/sh
 # Tests for the local CI wiring (#115, skill local-ci rule 7): the four tiers exist and compose
-# (check = lint + test + security + secrets; nightly ⊇ check), no GitHub workflow is left (ADR-0011),
+# (check = lint + test + security + secrets; nightly warns on check and drift, fails on audit and secrets), no GitHub workflow is left (ADR-0011),
 # the Node and pnpm pins agree, lefthook.yml is valid and wires the commit-msg and pre-push hooks,
 # the commit-msg check accepts and refuses the right subjects; then, in a throwaway repository with
 # stubbed boundaries (just steps, attest.sh, gh, sonar-scanner): gate refuses a dirty tree, a HEAD
@@ -39,7 +39,12 @@ for r in fast check gate nightly setup merge smoke sonar; do
 done
 deps() { just --show "$1" | grep -E "^$1( |:)" | sed 's/.*: *//'; } # deps <recipe>
 [ "$(deps check)" = "lint test security secrets" ] || fail "check must be exactly lint test security secrets"; ok
-deps nightly | grep -qw check || fail "nightly does not depend on check"; ok
+# The nightly (#123, agents-skills#427): check and drift warn, vulnerabilities and secrets fail.
+just --show nightly | grep -q '^ *warn just check$' || fail "nightly does not warn on just check"; ok
+just --show nightly | grep -q '^ *warn drift$' || fail "nightly does not warn on drift"; ok
+for t in 'pnpm run audit' 'just secrets' 'trivy fs' 'trufflehog git'; do
+  just --show nightly | grep -q "^ *$t.*|| rc=1$" || fail "nightly does not fail on $t"; ok
+done
 just --show smoke | grep -q 'pnpm e2e:smoke' || fail "smoke does not run the E2E smoke (ADR-0010)"; ok
 [ -z "$(find .github -path '*/workflows/*' -name '*.y*ml' 2>/dev/null)" ] || fail "a GitHub workflow is left (ADR-0011: none until a prod.yml is decided)"; ok
 # The nightly TruffleHog exclude list: every rule is a valid regex, and the file excludes itself (its

@@ -630,4 +630,4 @@ Sensitivity: C and A stay top two and G last under value 45 or effort 35; E pass
 ## 2026-11-15 — nightly on a clean origin/main worktree (#123)
 
 - Applied agents-skills#427 (skill local-ci rule 9, § L3 step 4): the unit no longer runs in the working checkout (behind origin/main on 2026-11-13, stale `node_modules`) but in `~/.cache/nightly/dock-n-roll`, a detached worktree of origin/main fetched, reset, cleaned and `pnpm install --frozen-lockfile`d before each run.
-- `just nightly` is now a `/bin/sh` script: only Trivy fs (vulnerabilities) and TruffleHog (secrets) fail it; `just check` and the mise toolchain drift print `WARNING nightly: …` (closes the day-0 release vs cooldown follow-up of #121).
+- `just nightly` is now a `/bin/sh` script: only vulnerabilities (`pnpm audit`, Trivy fs) and secrets (gitleaks, TruffleHog) fail it; `just check` and the mise toolchain drift print `WARNING nightly: …` (closes the day-0 release vs cooldown follow-up of #121).

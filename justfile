@@ -8,7 +8,8 @@
 #   L1 check    pre-push hook, review-local --push     lint + test + security + secrets        < 3 min
 #   L2 gate     review-local § 2b, on the pushed head  check + Sonar + .deb + E2E smoke,       5–15 min
 #               before every merge                     then the attestation
-#   L3 nightly  systemd user timer                     check + Trivy fs + TruffleHog + mise outdated
+#   L3 nightly  systemd user timer                     audit + Trivy fs + gitleaks + TruffleHog
+#                                                      (check, mise outdated: warn)
 #
 # Then: `just merge <pr>` (refuses without the gate attestation on the head SHA). Nothing deploys:
 # the product is the .deb the owner builds (`pnpm dist`) and installs; a release is a signed tag
@@ -135,14 +136,14 @@ merge pr:
     sh scripts/attest.sh verify gate "$sha"
     gh pr merge "$pr" --merge --match-head-commit "$sha"
 
-# L3 — nightly, systemd user timer (no time budget): new CVEs against the unchanged lockfile, deep
-# secret history (.trufflehog-exclude keeps the pin-file test out: its fixture URLs trip the URI
-# detector), toolchain drift: `mise outdated` exits 0 whatever it finds and still lists the global
-# ~/.tool-versions under --no-global, so the recipe keeps the mise.toml rows and fails on a
-# non-empty report (`--bump`: without it exact pins report nothing; Node is pinned to 22 on purpose,
-# so its row is dropped, like pnpm's, which follows package.json#packageManager).
-# L3 — nightly (systemd timer, clean origin/main worktree, agents-skills#427): only a vulnerability
-# (Trivy fs) or a secret (TruffleHog) fails it; `just check` and toolchain drift warn.
+# L3 — nightly, systemd user timer (no time budget), run by the unit in a clean origin/main worktree
+# (#123, agents-skills#427): new CVEs against the unchanged lockfile (pnpm audit, Trivy fs), deep
+# secret history (gitleaks, TruffleHog; .trufflehog-exclude keeps the pin-file test out: its fixture
+# URLs trip the URI detector) fail it; `just check` and toolchain drift only warn. `mise outdated`
+# exits 0 whatever it finds and still lists the global ~/.tool-versions under --no-global, so the
+# drift keeps the mise.toml rows (`--bump`: without it exact pins report nothing; Node is pinned to
+# 22 on purpose, so its row is dropped, like pnpm's, which follows package.json#packageManager).
+# L3 — nightly on a clean origin/main worktree: audit, Trivy, gitleaks, TruffleHog fail; check, drift warn
 nightly:
     #!/bin/sh
     set -u
@@ -154,6 +155,8 @@ nightly:
         [ -z "$d" ] || { echo "toolchain drift, bump mise.toml:"; echo "$d"; return 1; }
     }
     warn just check
+    pnpm run audit || rc=1
+    just secrets || rc=1
     trivy fs --exit-code 1 --severity HIGH,CRITICAL --skip-dirs node_modules,dist,out,coverage,.claude . || rc=1
     trufflehog git "file://$PWD" --no-verification --fail --no-update --exclude-paths .trufflehog-exclude || rc=1
     warn drift

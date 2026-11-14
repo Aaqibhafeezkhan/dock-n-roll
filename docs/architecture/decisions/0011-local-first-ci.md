@@ -26,7 +26,7 @@ hooks by lefthook, no agent needed:
 | L0 | `just fast` | pre-commit hook (the commit-msg hook adds the Conventional Commits subject check) | staged files: gitleaks, eslint, typos, shellcheck |
 | L1 | `just check` | pre-push, `review-local --push` | eslint, tsc, the electron-vite bundle, typos, shellcheck, `lefthook validate`; vitest with the coverage floor of ADR-0007; the wiring and attestation tests; Semgrep CE (`p/javascript`, `p/typescript`, `p/react`); `pnpm audit --audit-level=high`; gitleaks on the full history |
 | L2 | `just gate` | before every merge, on the pushed head, which must contain `base` (`origin/main`): a PR takes `main` in before its gate | `check`, SonarQube quality gate (global analysis token), `pnpm dist` + E2E smoke of the unpacked build under Xvfb (ADR-0010), then `scripts/attest.sh write gate`: a signed note on `refs/notes/gate` and the commit status `gate` |
-| L3 | `just nightly` | systemd user timer, 04:40 (+ up to 10 min; catches up after the PC was off) | `check`, Trivy fs on the lockfile, TruffleHog on the history, toolchain drift (`mise outdated --bump`, failing on any `mise.toml` row but Node and pnpm, pinned to `.nvmrc` and `packageManager`) |
+| L3 | `just nightly` | systemd user timer, 04:40 (+ up to 10 min; catches up after the PC was off) | in a clean `origin/main` worktree (#123, agents-skills#427): `pnpm audit`, Trivy fs on the lockfile, gitleaks and TruffleHog on the history fail it; `check` and toolchain drift (`mise outdated --bump`, any `mise.toml` row but Node and pnpm, pinned to `.nvmrc` and `packageManager`) only warn |
 
 `just merge <pr>` refuses a head SHA without a verified attestation and merges with a merge commit
 (stacked PRs, PROJECT_LOG decision of 2026-10-09); the trust store is `.github/allowed_signers`
@@ -70,5 +70,6 @@ B is worth it only when the `.deb` is distributed to others; it is filed as issu
   `mise.toml`, the Node guard and the wiring tests of `scripts/test-local-ci.sh`.
 - Bad: a PR shows no check on GitHub except the `gate` status written by the attestation; the
   branch protection, if any, must require `gate` only.
-- Bad: the nightly runs in the owner's checkout, on whatever branch it has out; it watches the
-  lockfile and the history, which rarely differ from `main`, so this is accepted.
+- Bad (superseded by #123, agents-skills#427): the nightly ran in the owner's checkout, on whatever
+  branch it had out; it now runs in `~/.cache/nightly/dock-n-roll`, a worktree reset to
+  `origin/main` before each run.

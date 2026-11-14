@@ -7,10 +7,12 @@ Type=oneshot
 # The user manager's PATH has no ~/.local/bin, where mise lives; mise brings the pinned tools.
 Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 Environment=REPO=%h/Documents/02_personal/dock-n-roll WT=%h/.cache/nightly/dock-n-roll
+# Install: install -m 644 scripts/systemd/dock-n-roll-nightly.* ~/.config/systemd/user/ &&
+#          systemctl --user daemon-reload
 # Never the working checkout: it may sit on a feature branch or behind origin/main (agents-skills#427).
 # '-': a catch-up run before the network is up uses the last fetched origin/main.
 ExecStartPre=-/usr/bin/git -C ${REPO} fetch --quiet origin main
-ExecStartPre=/bin/sh -c 'test -d "$WT" || git -C "$REPO" worktree add --detach "$WT" origin/main'
+ExecStartPre=/bin/sh -c 'test -d "$WT" || { git -C "$REPO" worktree prune && git -C "$REPO" worktree add --detach "$WT" origin/main; }'
 ExecStartPre=/usr/bin/git -C ${WT} reset --quiet --hard origin/main
 ExecStartPre=/usr/bin/git -C ${WT} clean -ffdq
 ExecStartPre=%h/.local/bin/mise trust --quiet ${WT}
