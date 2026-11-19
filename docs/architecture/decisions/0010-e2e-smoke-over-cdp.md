@@ -39,5 +39,5 @@ Weights: tests the hardened binary 35, test simplicity 25, dependency / CI cost 
 ### Consequences
 
 - The debugging port is only passed by the smoke; the shipped binary and its fuses are unchanged.
-- The smoke checks the wiring, not behaviour: service actions stay covered by unit tests. Layout
-  checks jsdom cannot see (reflow, #84) live in the smoke.
+- The smoke checks the wiring and the layout jsdom cannot see (reflow, #84); service actions stay
+  covered by unit tests.

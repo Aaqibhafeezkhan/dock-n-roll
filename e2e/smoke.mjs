@@ -112,13 +112,18 @@ async function main() {
     // is emulated over CDP; a clipped button would not widen the page, so each is checked too.
     for (const { width, height } of NARROW_VIEWPORTS) {
       await page.setViewportSize({ width, height })
-      const { overflow, rights } = await page.evaluate(() => {
+      const { overflow, fits } = await page.evaluate(() => {
         const root = globalThis.document.documentElement
         const buttons = root.querySelectorAll('details.group .service__actions button')
-        return { overflow: root.scrollWidth - root.clientWidth, rights: [...buttons].map((button) => button.getBoundingClientRect().right - root.clientWidth) }
+        // Both edges: without wrapping, right-aligned buttons slip off the left one.
+        const fits = [...buttons].map((button) => {
+          const { left, right } = button.getBoundingClientRect()
+          return left >= 0 && right <= root.clientWidth
+        })
+        return { overflow: root.scrollWidth - root.clientWidth, fits }
       })
       check(overflow <= 0, `no horizontal scroll at ${width} px (#84)${overflow > 0 ? `: ${overflow} px over` : ''}`)
-      check(rights.length === 5 && rights.every((right) => right <= 0), `the five actions fit at ${width} px (#84)`)
+      check(fits.length === 5 && fits.every(Boolean), `the five actions fit at ${width} px (#84)`)
     }
     // Checked before the 404 probe, which Chromium logs as a failed resource.
     check(errors.length === 0, `no console or CSP error${errors.length ? `: ${errors.join(' | ')}` : ''}`)
