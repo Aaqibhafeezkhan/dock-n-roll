@@ -14,6 +14,7 @@ const DASHBOARD_URL = 'app://dashboard/index.html'
 const TRAVERSAL_URL = 'app://dashboard/..%2f..%2fetc%2fpasswd'
 const TIMEOUT_MS = 30_000
 const DICTIONARY_WAIT_MS = 5_000
+const NARROW_WIDTHS = [320, 360]
 // Hosts Chromium's spellchecker fetches its dictionary from (#95).
 const GOOGLE_DICTIONARY_HOSTS = /gvt1\.com|dl\.google\.com/
 
@@ -68,8 +69,9 @@ async function main() {
 
   const configHome = await mkdtemp(join(tmpdir(), 'dock-n-roll-smoke-'))
   // A pinned entry in a group: the pin file reaches the dashboard whether Docker runs or not (#77).
+  // Its url adds `Open ↗`, the fifth action of the widest row (#84).
   await mkdir(join(configHome, 'dock-n-roll'))
-  await writeFile(join(configHome, 'dock-n-roll', 'services.yaml'), 'services:\n  - workingDir: /nonexistent/smoke\n    pinned: true\n    groups: [QA]\n')
+  await writeFile(join(configHome, 'dock-n-roll', 'services.yaml'), 'services:\n  - workingDir: /nonexistent/smoke\n    url: http://localhost:9\n    pinned: true\n    groups: [QA]\n')
   const env = { ...process.env, XDG_CONFIG_HOME: configHome }
   const port = await freePort()
   const netLog = join(configHome, 'net-log.json')
@@ -102,6 +104,16 @@ async function main() {
     check(state === 'answered', 'window.dockNRoll.getState() answers (Docker may be unavailable)')
     await page.locator('details.group', { hasText: 'QA' }).locator('.service').first().waitFor({ timeout: TIMEOUT_MS })
     console.log('ok - the pin file group shows as a section holding its member (#98)')
+    // WCAG 1.4.10 Reflow (#84): 320 px wide is also a 640 px window at 200 % zoom.
+    for (const width of NARROW_WIDTHS) {
+      await page.setViewportSize({ width, height: 568 })
+      const overflow = await page.evaluate(() => {
+        const root = globalThis.document.documentElement
+        return root.scrollWidth - root.clientWidth
+      })
+      check(overflow <= 0, `no horizontal scroll at ${width} px (#84)`)
+    }
+    await page.setViewportSize({ width: 960, height: 640 })
     // Checked before the 404 probe, which Chromium logs as a failed resource.
     check(errors.length === 0, `no console or CSP error${errors.length ? `: ${errors.join(' | ')}` : ''}`)
     const statusOf = (url) => page.evaluate((target) => fetch(target).then((response) => response.status), url)

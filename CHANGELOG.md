@@ -22,6 +22,8 @@ file format (`services.yaml`) and the installed package.
 
 ### Fixed
 
+- Dashboard: the action buttons of a row wrap instead of overflowing, so a window 320 px wide
+  or at 200 % zoom no longer scrolls sideways (WCAG 1.4.10 Reflow, #84).
 - Dashboard: a failed Start, Stop or Restart is labelled ("Start failed:"), shown in an error
   colour with the last Compose lines one per line, and announced by screen readers through a
   polite status region; the tray names it too (#85).
