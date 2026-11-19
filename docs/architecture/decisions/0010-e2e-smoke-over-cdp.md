@@ -29,7 +29,9 @@ Weights: tests the hardened binary 35, test simplicity 25, dependency / CI cost 
   title `dock-n-roll`, React root rendered, `window.dockNRoll.getState()` answers, no console or
   CSP error, `app://dashboard/..%2f..%2fetc%2fpasswd` answers 404, and the binary's fuse wire has
   `GrantFileProtocolExtraPrivileges` off (`@electron/fuses`); after 5 s, the Chromium net log
-  (`--log-net-log`) holds no request to a Google spellcheck dictionary host (#95).
+  (`--log-net-log`) holds no request to a Google spellcheck dictionary host (#95). The pinned
+  entry shows as a group section (#98), and at 320 × 568 and 360 × 640 the page does not scroll
+  sideways and the five actions of its row fit (#84).
 - CI `package` job: `xvfb-run -a pnpm e2e:smoke` after `pnpm dist`, before the upload (since
   ADR-0011: `just smoke`, in the local gate).
 - Docker is not required: "Docker unavailable" is a valid state for the smoke.
@@ -37,4 +39,5 @@ Weights: tests the hardened binary 35, test simplicity 25, dependency / CI cost 
 ### Consequences
 
 - The debugging port is only passed by the smoke; the shipped binary and its fuses are unchanged.
-- The smoke checks the wiring, not behaviour: service actions stay covered by unit tests.
+- The smoke checks the wiring, not behaviour: service actions stay covered by unit tests. Layout
+  checks jsdom cannot see (reflow, #84) live in the smoke.
