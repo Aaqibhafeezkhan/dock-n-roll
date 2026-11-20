@@ -651,5 +651,6 @@ Sensitivity: C and A stay top two and G last under value 45 or effort 35; E pass
 - Each frame is compared with the packaged app on fixtures (fake Docker daemon, temporary pin file); note with side-by-side images and the known differences: `docs/architecture/design/dashboard-capture.md`.
 - MCP findings: PNG/SVG export works; no native tokens JSON export in the plugin API (taken from the `.penpot` archive); `File.export` fails in 2.19.3, the `.penpot` file is downloaded from the browser menu. Lessons reported in agents-skills#556.
 - Adversarial review round 1 (2 Must): the references were laid out at 960/320 then cropped (re-shot at 945/305 with a page-tall window); the mono token named Noto Sans Mono while Chromium on Linux renders DejaVu Sans Mono (owner MCDA: upload DejaVu to Penpot 450, vs token-only or keep Noto 315). Component SVGs dropped (they load fonts from the local Penpot). Found while re-shooting: the Running tab table overflows at 320 px, #132.
+- Round 2 (1 Must): the re-shoot ran in the desktop session (Ubuntu Sans for `system-ui`, colour management); re-shot with a clean environment and `--force-color-profile=srgb`, the token colours are exact again.
 - Docs only: no source or test changes.
 - Next: #131 (doc coverage in the gate), #127, #132, then #129 after the #554 verdict.

@@ -91,19 +91,19 @@ Left: the packaged app. Right: the Penpot export.
 | Frame | Penpot (px) | App (px) |
 |---|---|---|
 | `service-list-960` | 960 × 575 | 960 × 600 (window height; the content is shorter) |
-| `service-list-320` | 305 × 993 | 305 × 982 |
-| `logs-panel-960` | 945 × 812 | 945 × 805 |
-| `logs-panel-320` | 305 × 1348 | 305 × 1337 |
+| `service-list-320` | 305 × 993 | 305 × 981 |
+| `logs-panel-960` | 945 × 812 | 945 × 804 |
+| `logs-panel-320` | 305 × 1348 | 305 × 1336 |
 | `running-tab-960` | 945 × 813 | 945 × 804 |
-| `running-tab-320` | 305 × 1282 | 305 × 1311 |
+| `running-tab-320` | 305 × 1282 | 305 × 1272 |
 | `banners-960` | 945 × 663 | 945 × 655 |
-| `banners-320` | 305 × 1140 | 305 × 1128 |
+| `banners-320` | 305 × 1140 | 305 × 1127 |
 
 ## Known differences
 
 - **Height**: Penpot rounds each text line up to a whole pixel (19.6 px becomes 20 px), so a frame is 8 to 13 px taller than the app.
 - **Line breaks**: the app breaks a long string anywhere (`overflow-wrap: anywhere`); Penpot breaks at spaces only, so the breaks are typed by hand where the app breaks inside a word.
-- **Running tab at 320 px**: the browser sizes the table columns from their content, a few pixels apart from the Penpot frame, so cells wrap at other places and the app is 29 px taller. The app's table also runs 12 px into the right padding (#132).
+- **Running tab at 320 px**: the table is wider than the content and runs 22 px into the right padding, in the app (#132) and in the frame alike.
 - **Logs box**: the app caps it at 300 px and scrolls; the frame clips it at the same height, without a scrollbar. The app's scrollbar narrows the text, so one line at 320 px breaks earlier.
 - **Container select**: the app draws the native `<select>` arrow; the frames use a `⌵` glyph.
 - **Greyed badge**: the dashed 1 px border is drawn as a dotted stroke.
@@ -114,7 +114,7 @@ Left: the packaged app. Right: the Penpot export.
 
 ## Method
 
-- Reference: a throwaway script drives the packaged app over the Chrome DevTools Protocol (CDP), under Xvfb, with a fake Docker daemon, a fake `ss` and a temporary home; it also records the position, size and computed style of each element, which the Penpot frames reuse. The geometry and the screenshots come from the same layout.
+- Reference: a throwaway script drives the packaged app over the Chrome DevTools Protocol (CDP), under Xvfb, with a fake Docker daemon, a fake `ss` and a temporary home; it also records the position, size and computed style of each element, which the Penpot frames reuse. The geometry and the screenshots come from the same layout. The app runs with a clean environment (no desktop session, so `system-ui` is Noto Sans) and `--force-color-profile=srgb`, so the token colours are exact.
 - Penpot: everything was created through the Penpot MCP (Model Context Protocol) server, `execute_code` with the plugin API, then compared with the reference side by side.
 
 ## What the MCP can and cannot export
