@@ -631,3 +631,13 @@ Sensitivity: C and A stay top two and G last under value 45 or effort 35; E pass
 
 - Applied agents-skills#427 (skill local-ci rule 9, § L3 step 4): the unit no longer runs in the working checkout (behind origin/main on 2026-11-13, stale `node_modules`) but in `~/.cache/nightly/dock-n-roll`, a detached worktree of origin/main fetched, reset, cleaned and `pnpm install --frozen-lockfile`d before each run.
 - `just nightly` is now a `/bin/sh` script: only vulnerabilities (`pnpm audit`, Trivy fs) and secrets (gitleaks, TruffleHog) fail it; `just check` and the mise toolchain drift print `WARNING nightly: …` (closes the day-0 release vs cooldown follow-up of #121).
+
+## 2026-11-20 — #84: the dashboard reflows at 320 px and 200 % zoom
+
+- QA finding UI-01 (P0) of 2026-10-24: a row's action group (`flex: none`, `min-width: 152px`) could neither shrink nor wrap, so a five-action row scrolled the window sideways at 320 and 360 px and at 200 % zoom (WCAG 2.2 SC 1.4.10).
+- Fix in `global.css`: `.service__actions` shrinks (`flex: 0 1 auto`), wraps, and caps its minimum width at the row (`min(var(--actions-width), 100%)`).
+- Test first: the E2E smoke pins its entry with a `url` (fifth action `Open ↗`) and checks `scrollWidth <= clientWidth` at 320 and 360 px in the packaged app; red before the fix, green after (15/15 with the five-action check). jsdom has no layout, so no unit test can see it.
+- Packaged QA with the real Penpot stack (five actions) at 320, 360 and 640 px at 200 % zoom: no sideways scroll, every action visible; report `docs/architecture/qa/2026-11-20-84-reflow.md`.
+- Unblocked `just check`: a global `tag.gpgSign=true` signed the "unsigned" tag of `scripts/test-attest.sh` (owner MCDA: fix in this PR 435 vs separate PR 430 vs drop the global setting 265); the test repo now sets `tag.gpgSign false`.
+- ADR-0010 lists the reflow check; layout checks jsdom cannot see live in the smoke.
+- Next: #127 (name squeezed between 460 and 540 px, found by the adversarial review, pre-existing), then #41 + #61 (+ #57).

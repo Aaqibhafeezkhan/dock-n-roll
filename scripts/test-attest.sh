@@ -32,7 +32,8 @@ git init -q --bare -b main "$work/remote.git"
 repo="$work/repo"
 git init -q -b main "$repo" && cd "$repo"
 git config user.email t@example.com && git config user.name t
-git config gpg.format ssh && git config user.signingkey "$work/key.pub"
+# tag.gpgSign off: a global setting would sign the unsigned tag of the release checks.
+git config gpg.format ssh && git config user.signingkey "$work/key.pub" && git config tag.gpgSign false
 git remote add origin "$work/remote.git"
 mkdir -p scripts .github
 cp "$root/scripts/attest.sh" scripts/

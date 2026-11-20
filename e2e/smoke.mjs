@@ -14,6 +14,10 @@ const DASHBOARD_URL = 'app://dashboard/index.html'
 const TRAVERSAL_URL = 'app://dashboard/..%2f..%2fetc%2fpasswd'
 const TIMEOUT_MS = 30_000
 const DICTIONARY_WAIT_MS = 5_000
+const NARROW_VIEWPORTS = [
+  { width: 320, height: 568 },
+  { width: 360, height: 640 }
+]
 // Hosts Chromium's spellchecker fetches its dictionary from (#95).
 const GOOGLE_DICTIONARY_HOSTS = /gvt1\.com|dl\.google\.com/
 
@@ -68,8 +72,10 @@ async function main() {
 
   const configHome = await mkdtemp(join(tmpdir(), 'dock-n-roll-smoke-'))
   // A pinned entry in a group: the pin file reaches the dashboard whether Docker runs or not (#77).
+  // Its url adds `Open ↗`, shown only with a url: the reflow check below (#84) needs that
+  // fifth action, the widest row, and fails if it is gone.
   await mkdir(join(configHome, 'dock-n-roll'))
-  await writeFile(join(configHome, 'dock-n-roll', 'services.yaml'), 'services:\n  - workingDir: /nonexistent/smoke\n    pinned: true\n    groups: [QA]\n')
+  await writeFile(join(configHome, 'dock-n-roll', 'services.yaml'), 'services:\n  - workingDir: /nonexistent/smoke\n    url: http://localhost:9\n    pinned: true\n    groups: [QA]\n')
   const env = { ...process.env, XDG_CONFIG_HOME: configHome }
   const port = await freePort()
   const netLog = join(configHome, 'net-log.json')
@@ -102,6 +108,23 @@ async function main() {
     check(state === 'answered', 'window.dockNRoll.getState() answers (Docker may be unavailable)')
     await page.locator('details.group', { hasText: 'QA' }).locator('.service').first().waitFor({ timeout: TIMEOUT_MS })
     console.log('ok - the pin file group shows as a section holding its member (#98)')
+    // WCAG 1.4.10 Reflow (#84): 320 px wide is also a 640 px window at 200 % zoom. The viewport
+    // is emulated over CDP; a clipped button would not widen the page, so each is checked too.
+    for (const { width, height } of NARROW_VIEWPORTS) {
+      await page.setViewportSize({ width, height })
+      const { overflow, fits } = await page.evaluate(() => {
+        const root = globalThis.document.documentElement
+        const buttons = root.querySelectorAll('details.group .service__actions button')
+        // Both edges: without wrapping, right-aligned buttons slip off the left one.
+        const fits = [...buttons].map((button) => {
+          const { left, right } = button.getBoundingClientRect()
+          return left >= 0 && right <= root.clientWidth
+        })
+        return { overflow: root.scrollWidth - root.clientWidth, fits }
+      })
+      check(overflow <= 0, `no horizontal scroll at ${width} px (#84)${overflow > 0 ? `: ${overflow} px over` : ''}`)
+      check(fits.length === 5 && fits.every(Boolean), `the five actions fit at ${width} px (#84)`)
+    }
     // Checked before the 404 probe, which Chromium logs as a failed resource.
     check(errors.length === 0, `no console or CSP error${errors.length ? `: ${errors.join(' | ')}` : ''}`)
     const statusOf = (url) => page.evaluate((target) => fetch(target).then((response) => response.status), url)

@@ -255,12 +255,14 @@ button:focus-visible {
   white-space: pre-line;
 }
 
+/* #84: the group shrinks and wraps, so a narrow or zoomed window never scrolls sideways. */
 .service__actions {
-  flex: none;
+  flex: 0 1 auto;
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--space-2);
-  min-width: var(--actions-width);
+  min-width: min(var(--actions-width), 100%);
 }
 
 .running__error {
