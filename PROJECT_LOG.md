@@ -654,3 +654,17 @@ Sensitivity: C and A stay top two and G last under value 45 or effort 35; E pass
 - Round 2 (1 Must): the re-shoot ran in the desktop session (Ubuntu Sans for `system-ui`, colour management); re-shot with a clean environment and `--force-color-profile=srgb`, the token colours are exact again.
 - Docs only: no source or test changes.
 - Next: #131 (doc coverage in the gate), #127, #132, then #129 after the #554 verdict.
+
+## 2026-11-20 — #135: the redesign brief
+
+- Owner decision 2026-11-20: full redesign of the dashboard, run as a design study in Penpot before any code; epic #134, eight steps (#135 to #142), one chat each, validated one by one. The open UI issues (#127, #132, #88, #89, #91, #82, #61, #41, #68, #64) feed the study instead of being fixed one by one.
+- Step 1: `docs/architecture/design/brief.md`, from an owner interview in three rounds, validated by the owner.
+- Use scene: a quick look from the tray, a few times a day. Task order: see the state, then act when it is not the wanted one, then diagnose.
+- Owner MCDA: scope B, current screens plus #41, #61 and #68, tray menu out (435, vs 400 with the tray, 355 current screens only); ambition A, replacement world (425, vs 330 new composition, 250 polish).
+- Needs ranked Must / Should / Nice (16 lines); the owner set V4 Running data Should, A5 actions menu Should, D2 logs Must, O2 pin editing in the interface Nice.
+- Leading principle restated by the owner: minimal interface, buttons and fields shown from the previous click; the brief reads it as "a control that does not apply is absent, not disabled".
+- Measured on the workstation: 12 Compose projects (2 running), 7 pin entries, 4 groups, 24 containers outside Compose (11 running).
+- Found: the window opens at 720 × 520 px, while the capture of #128 used 960 and 320 px; open question for the audit.
+- Docs only: no source or test changes, no Penpot work.
+- Owner rule for the epic: the lessons of each step go to agents-skills#560 (skill design-study) and, for Penpot, agents-skills#556.
+- Next: #136 (audit of the current dashboard).
