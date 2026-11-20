@@ -15,17 +15,19 @@ Pre-push review of the reflow fix for issue #84, three adversarial rounds, push 
 - Round 3 on `ea1f917`: 2 fixed · 0 not fixed · 0 regressed · new Must 0 · **Push gate: open**
 - Optional second review (owner's own account): not run (never a gate step)
 
-## Pre-merge gate (head SHA `ea1f917`)
+## Pre-merge gate (head SHA `f992fbe`)
 
 | Step | Result |
 |---|---|
-| 1 Tests | ✅ 660 unit/integration (38 files) · `test-local-ci` 64 · `test-attest` 22 · smoke 15/15 on the packaged build (`just smoke`, run by hand) |
-| 2 Coverage | tests 97.33 % stmts / 92.81 % branches / 97.95 % funcs / 98.6 % lines (floor 80) · docs ⏸ deferred to the pre-merge run |
-| 3 SonarQube | ⏸ deferred to the pre-merge run |
-| 4 Secrets | ✅ gitleaks clean (195 commits) · no tracked `.env` · diff read: nothing sensitive; QA screenshots cropped to the Design group |
-| 5 E2E/smoke | ⏸ deferred to the pre-merge run (`just gate`); `just smoke` already green on `ea1f917` |
+| 1 Tests | ✅ 660 unit/integration (38 files) · `test-local-ci` 64 · `test-attest` 22 |
+| 2 Coverage | tests 97.33 % stmts / 92.81 % branches / 97.95 % funcs / 98.6 % lines (floor 80) · docs ⚠️ not run by `just gate`: 72.1 % by hand (106 of 147 exports, skill counter), under the 90 % floor, debt older than this branch, which changes no export (#131) |
+| 3 SonarQube | ✅ `QUALITY GATE STATUS: PASSED` |
+| 4 Secrets | ✅ gitleaks clean · no tracked `.env` · diff read: nothing sensitive; QA screenshots cropped to the Design group |
+| 5 E2E/smoke | ✅ smoke 15/15 on the packaged build, the four #84 checks included · QA pass: [2026-11-20-84-reflow](../qa/2026-11-20-84-reflow.md) |
 
-- Gate: **pre-push green** — `mise x -- just check` passed on `ea1f917` (exit 0, no skipped step); doc coverage, SonarQube and the gated E2E deferred.
+- Gate: **attested, one step not run** — `mise x -- just gate` exit 0 on `f992fbe`, `attest: gate verified on f992fbeef60d763de77d8ed6ccc4ff30234d157f`. Doc coverage is not held by the gate and is under its floor: the owner allowed the merge on 2026-11-20 with that step recorded as not run, tracked in #131. Not claimed green.
+- A first run with `SONAR_TOKEN` exported failed `scripts/test-local-ci.sh:155` ("sonar: no token"), which inherits the variable; `just sonar` reads the token file itself, so the gate runs without the prefix.
+- This report-only commit is gated again before the merge; it differs from `f992fbe` by this file alone.
 - CI mirror: no `pull_request` workflow (ADR-0011), n/a.
 
 ## 🔴 Must Have
