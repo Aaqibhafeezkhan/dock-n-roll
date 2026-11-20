@@ -11,7 +11,7 @@ The current dashboard, reproduced in the self-hosted Penpot (2.19.3) as a starti
 | `dock-n-roll.penpot` | The Penpot file (menu > File > Download Penpot file). Import it from the Penpot dashboard. |
 | `tokens.json` | The token sets and themes, as Penpot stores them (`tokens.json` inside the `.penpot` archive). |
 | `exports/<screen>-<width>-<theme>.png` | One PNG per screen frame, exported from Penpot. |
-| `exports/components/<component>.png`, `.svg` | The main instance of each component (PNG at 2x). |
+| `exports/components/<component>.png` | The main instance of each component, at 2x. |
 | `reference/<screen>-<width>-<theme>.png` | The same screen in the packaged app (`dist/linux-unpacked`), full page. |
 
 ## Tokens
@@ -34,7 +34,8 @@ Differences with `tokens.css`:
 - `--color-line`, `--color-hover` and `--color-banner` are `color-mix()` expressions in CSS. Penpot has no such function: each set holds the computed `rgba()` value.
 - `--divider` is a border shorthand, not a token in Penpot: dividers are 1 px rectangles filled with `color.line`.
 - Font weights (400, 600) and the line height (1.4) are not tokens in the CSS either; they are set on each text.
-- `system-ui` resolves to Noto Sans on the reference machine and `ui-monospace` to Noto Sans Mono, so the Penpot file uses these two families.
+- `system-ui` resolves to Noto Sans on the reference machine. Chromium on Linux does not support `ui-monospace`, so the mono stack falls back to DejaVu Sans Mono.
+- DejaVu Sans Mono is not a Google font: it is uploaded to the Penpot team as a custom font (regular and bold). The `.penpot` file does not embed it; upload `DejaVuSansMono.ttf` before importing the file elsewhere.
 
 ## Components
 
@@ -51,7 +52,7 @@ The exports are at 2x. `service-row / narrow`: `exports/components/service-row-n
 
 Ten frames: four screens at two widths in light, and the service list in dark. The data is a fixture (fake Docker daemon, temporary pin file): no real project appears.
 
-The app window is 960 or 320 px wide. A page taller than the window shows a 15 px scrollbar, so its content, and its frame, is 945 or 305 px wide. Only the service list at 960 px fits the window.
+The app window is 960 or 320 px wide. A page taller than the window shows a 15 px scrollbar, so its content, and its frame, is 945 or 305 px wide. Only the service list at 960 px fits the window. The reference of a taller page is taken at 945 or 305 px with a window as tall as the page, so it shows the same layout without the scrollbar.
 
 Left: the packaged app. Right: the Penpot export.
 
@@ -90,19 +91,21 @@ Left: the packaged app. Right: the Penpot export.
 | Frame | Penpot (px) | App (px) |
 |---|---|---|
 | `service-list-960` | 960 × 575 | 960 × 600 (window height; the content is shorter) |
-| `service-list-320` | 305 × 993 | 305 × 981 |
-| `logs-panel-960` | 945 × 812 | 945 × 804 |
-| `logs-panel-320` | 305 × 1348 | 305 × 1336 |
+| `service-list-320` | 305 × 993 | 305 × 982 |
+| `logs-panel-960` | 945 × 812 | 945 × 805 |
+| `logs-panel-320` | 305 × 1348 | 305 × 1337 |
 | `running-tab-960` | 945 × 813 | 945 × 804 |
-| `running-tab-320` | 305 × 1282 | 305 × 1271 |
-| `banners-960` | 945 × 663 | 945 × 654 |
-| `banners-320` | 305 × 1140 | 305 × 1127 |
+| `running-tab-320` | 305 × 1282 | 305 × 1311 |
+| `banners-960` | 945 × 663 | 945 × 655 |
+| `banners-320` | 305 × 1140 | 305 × 1128 |
 
 ## Known differences
 
 - **Height**: Penpot rounds each text line up to a whole pixel (19.6 px becomes 20 px), so a frame is 8 to 13 px taller than the app.
-- **Line breaks**: the app breaks a long string anywhere (`overflow-wrap: anywhere`); Penpot breaks at spaces only. In the Running tab at 320 px the breaks are typed by hand; in the logs panel at 320 px the lines break at different places.
-- **Logs box**: the app caps it at 300 px and scrolls; the frame clips it at the same height, without a scrollbar.
+- **Line breaks**: the app breaks a long string anywhere (`overflow-wrap: anywhere`); Penpot breaks at spaces only, so the breaks are typed by hand where the app breaks inside a word.
+- **Running tab at 320 px**: the browser sizes the table columns from their content, a few pixels apart from the Penpot frame, so cells wrap at other places and the app is 29 px taller. The app's table also runs 12 px into the right padding (#132).
+- **Logs box**: the app caps it at 300 px and scrolls; the frame clips it at the same height, without a scrollbar. The app's scrollbar narrows the text, so one line at 320 px breaks earlier.
+- **Container select**: the app draws the native `<select>` arrow; the frames use a `⌵` glyph.
 - **Greyed badge**: the dashed 1 px border is drawn as a dotted stroke.
 - **Group marker**: `▾` is a text glyph, slightly smaller than in the app.
 - **Rows in the screens** are built like the `service-row` component but are not instances of it.
@@ -111,7 +114,7 @@ Left: the packaged app. Right: the Penpot export.
 
 ## Method
 
-- Reference: a throwaway script drives the packaged app over the Chrome DevTools Protocol (CDP), under Xvfb, with a fake Docker daemon, a fake `ss` and a temporary home; it also records the position, size and computed style of each element, which the Penpot frames reuse.
+- Reference: a throwaway script drives the packaged app over the Chrome DevTools Protocol (CDP), under Xvfb, with a fake Docker daemon, a fake `ss` and a temporary home; it also records the position, size and computed style of each element, which the Penpot frames reuse. The geometry and the screenshots come from the same layout.
 - Penpot: everything was created through the Penpot MCP (Model Context Protocol) server, `execute_code` with the plugin API, then compared with the reference side by side.
 
 ## What the MCP can and cannot export
