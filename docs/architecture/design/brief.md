@@ -46,10 +46,10 @@ Owner rule (2026-10-22, restated 2026-11-20). It ranks above every other design 
 
 ## Scope
 
-Owner MCDA 2026-11-20: option B, 435/500, against 400 (B plus the tray menu) and 355 (current screens only).
+Owner MCDA (multi-criteria decision analysis) 2026-11-20: option B, 435/500, against 400 (B plus the tray menu) and 355 (current screens only).
 
 - The current screens: service list with groups, Running tab, logs, banners.
-- The planned functions, designed with them: stop all (#41), service actions menu (#61), logs in their own window (#68).
+- The planned functions, designed with them: stop all (#41), service actions menu (#61), and the request for logs in their own window (#68, open question Q4).
 
 ## Ambition
 
@@ -82,11 +82,11 @@ Must: without it the redesign fails. Should: designed in the study, may be coded
 | A4 | Open the service's URL | Should | |
 | A5 | Service actions menu: open the folder, terminal in the container, start with the PC | Should | #61 |
 | D1 | Reason of a failed action on the row | Must | |
-| D2 | Readable logs: newest line first, empty stream announced, own window | Must | #64, #82, #68 |
+| D2 | Readable logs: they open on the newest line, an empty stream is announced | Must | #64, #82 |
 | D3 | Docker unavailable said clearly on every screen | Must | #88, #91 |
 | O1 | Search or filter | Nice | |
 | O2 | Pin, hide, rename, group from the interface instead of the YAML file | Nice | |
-| Q1 | Keyboard, 200 % zoom, narrow window, light and dark themes, WCAG 2.2 AA | Must | #89, #127, #132 |
+| Q1 | Keyboard, 200 % zoom, narrow window, light and dark themes, WCAG (Web Content Accessibility Guidelines) 2.2 level AA | Must | #89, #127, #132 |
 
 ## Pain points of the current dashboard
 
@@ -95,10 +95,10 @@ Evidence: the reference screenshots under `reference/` and the open issues. The 
 | # | Pain point | Evidence |
 |---|---|---|
 | 1 | The state is the least visible thing: a 10 px badge, the status in muted text, the summary ("1 of 5 on") in the top right corner. | `reference/service-list-960-light.png` |
-| 2 | Crowded rows: four or five buttons each, one to three of them disabled. Five services show 21 controls. | same |
+| 2 | Crowded rows: four or five buttons each, zero to three of them disabled. Five services show 21 controls. | same |
 | 3 | Inverted hierarchy: the black Start button draws the eye before the status. | same |
 | 4 | At 320 px a row takes three levels; five services need 981 px, so the list scrolls. Between 460 and 540 px the name is squeezed. | `reference/service-list-320-light.png`, #127 |
-| 5 | Groups: "Start all" and "Stop all" always visible, in a style of their own. | same |
+| 5 | Groups: "Start all" and "Stop all" always visible, on a line of their own under the group title. | `reference/service-list-960-light.png` |
 | 6 | Running tab: two raw tables, no sort, no filter, no link to the services; it overflows at 320 px. | `reference/running-tab-960-light.png`, #132 |
 | 7 | States not designed: Docker unavailable, empty log stream, logs opened in the middle of the buffer; hover, focus, empty and loading are not captured. | #88, #91, #82, #64 |
 | 8 | Generic look: system font, neutral greys, nothing that belongs to dock-n-roll. | `src/renderer/src/styles/tokens.css` |
@@ -106,15 +106,15 @@ Evidence: the reference screenshots under `reference/` and the open issues. The 
 
 ## Constraints
 
-- **Platform**: Electron renderer (React, ADR-0001, ADR-0004), Chromium on Linux only. Fonts must be bundled or present on Ubuntu; `system-ui` is Noto Sans on a clean session.
-- **Window**: no horizontal scroll and no clipped content from 320 to 960 px wide, and at 200 % zoom (WCAG 2.2 SC 1.4.10).
+- **Platform**: Electron renderer (React, ADR-0001, ADR-0004), Chromium on Linux only. Fonts must be bundled or present on Ubuntu; `system-ui` is Ubuntu Sans in the owner's GNOME session and Noto Sans in a clean session (the references).
+- **Window**: no horizontal scroll and no clipped content from 320 to 960 px wide, and at 200 % zoom (WCAG 2.2 success criteria 1.4.4 Resize text and 1.4.10 Reflow).
 - **Themes**: light and dark, following `prefers-color-scheme`.
 - **Accessibility**: WCAG 2.2 AA; a status never relies on colour alone; every action reachable by keyboard.
 - **Minimal and dynamic**: the leading principle above applies to every screen, the logs window and the dialogs included.
 - **Tokens**: one source. `tokens.css` is the master until #129; the new direction is recorded as Penpot tokens (#141).
 - **Branding**: no dock-n-roll brand rules exist; the study creates them (#140).
 - **Design tool**: Penpot, self-hosted; exports, tokens JSON and `.penpot` file versioned under `docs/architecture/design/` at each step.
-- **Security**: local-only app, renderer without direct Docker access (spec § 6 R4, ADR-0009). A design must not need a remote resource.
+- **Security**: local-only app (spec § 6 R4); the renderer is sandboxed and reaches Docker only through the main process (`diagrams/launcher/03-component.md`, ADR-0006). A design must not need a remote resource.
 
 ## Recorded decisions that stay
 
@@ -126,9 +126,12 @@ They describe behaviour, not appearance. The study may propose to reopen one, as
 | Stop is `compose stop`, never `down` | spec UC2 |
 | With Docker unreachable: an app-level banner, rows greyed without a status badge | spec § 4 |
 | Logs: text only, read-only, last 500 lines then follow | spec UC7, ADR-0008 |
-| The pin file is edited by hand | spec § 2 |
-| Every action is reachable from the tray menu | spec § 6 R5 |
+| Logs open in a dashboard panel, not in a window (ADR-0008, 435 against 315). #68 asks to reopen it: open question Q4; the decision stays until the owner rules on it. | ADR-0008, #68 |
+| The pin file is edited by hand. Need O2 (Nice, owner 2026-11-20) keeps a place for editing in the interface; the decision stays until the owner rules on it. | spec § 2 |
+| Every action is reachable from the tray menu, except the logs (dashboard only, UC7). The tray entries of new actions (A3, A5) are added by the code bricks: the native menu is not designed here. | spec § 6 R5, UC7 |
 | A failed action shows its reason on its row and is announced | #85 |
+
+Superseded by the leading principle (owner, 2026-11-20): the disabled buttons of spec UC1 extensions \*a and \*b and of the UC8 extension (Docker unavailable). A control that does not apply is absent; the reason it gave in a tooltip must stay readable elsewhere. The spec is updated with the specification of step 8 (#142).
 
 The status colour code (green on, red off, orange transitional, grey unavailable; spec § 4) is open to change like the rest of the look, as long as the four families stay distinct in both themes.
 
@@ -136,14 +139,14 @@ The status colour code (green on, red off, orange transitional, grey unavailable
 
 | # | Criterion | Measure |
 |---|---|---|
-| S1 | State read in 2 seconds | At the default window size, the global state and every service in fault are visible without scrolling, for the measured volume (12 projects). |
+| S1 | State read in 2 seconds | At the default window size, the global state and every service in fault are visible without scrolling, for the services measured on the workstation (the row count is fixed at the audit, Q2). |
 | S2 | Minimal at rest | At rest, at most 2 visible controls per service row (4 to 5 today) and no disabled control on screen. |
 | S3 | Actions stay close | Every action of the Must and Should needs is at most 2 clicks away from the open dashboard. |
 | S4 | Every state designed | Each screen has its empty, loading, error, Docker-unavailable, hover and focus states in the mockups. |
 | S5 | Accessible | No WCAG 2.2 AA defect in the mockups review; contrast checked on every text and status pair, in both themes. |
 | S6 | Reflow | No overflow from 320 to 960 px and at 200 % zoom, on every screen. |
 | S7 | Every Must covered | Each Must need maps to at least one mockup and one flow. |
-| S8 | Reviewed | `ui-review` score of the mockups above the threshold set at step 8 (#142). |
+| S8 | Reviewed | `ui-review` score above a threshold. The skill scores a built interface: how it applies to Penpot mockups (on their exports, or on the first coded brick) is set at step 8 (#142) with the threshold. |
 | S9 | Validated | The owner validates each step before the next. |
 
 ## Study steps
@@ -171,4 +174,4 @@ One issue and one chat per step; each ends with a versioned deliverable and the 
 | Q4 | Logs: own window, inline panel, or both (#68)? | #138 |
 | Q5 | Where do "stop all" (#41) and the actions menu (#61) live? | #138, #139 |
 | Q6 | Font: bundled family or system font? | #140 |
-| Q7 | Threshold of the `ui-review` score (S8) | #142 |
+| Q7 | Threshold of the `ui-review` score and how it is measured on mockups (S8) | #142 |

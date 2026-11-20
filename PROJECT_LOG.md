@@ -657,6 +657,7 @@ Sensitivity: C and A stay top two and G last under value 45 or effort 35; E pass
 
 ## 2026-11-20 — #135: the redesign brief
 
+- #128 merged as PR #133 (merge `ba82569`).
 - Owner decision 2026-11-20: full redesign of the dashboard, run as a design study in Penpot before any code; epic #134, eight steps (#135 to #142), one chat each, validated one by one. The open UI issues (#127, #132, #88, #89, #91, #82, #61, #41, #68, #64) feed the study instead of being fixed one by one.
 - Step 1: `docs/architecture/design/brief.md`, from an owner interview in three rounds, validated by the owner.
 - Use scene: a quick look from the tray, a few times a day. Task order: see the state, then act when it is not the wanted one, then diagnose.
@@ -665,6 +666,7 @@ Sensitivity: C and A stay top two and G last under value 45 or effort 35; E pass
 - Leading principle restated by the owner: minimal interface, buttons and fields shown from the previous click; the brief reads it as "a control that does not apply is absent, not disabled".
 - Measured on the workstation: 12 Compose projects (2 running), 7 pin entries, 4 groups, 24 containers outside Compose (11 running).
 - Found: the window opens at 720 × 520 px, while the capture of #128 used 960 and 320 px; open question for the audit.
+- Adversarial review round 1 (2 Must): the logs window (#68) and the pin editing (O2) contradicted ADR-0008 and spec § 2 without saying so; both are now recorded as decisions that stay, with their open question. The disabled buttons of spec UC1 and UC8 are listed as superseded by the leading principle.
 - Docs only: no source or test changes, no Penpot work.
 - Owner rule for the epic: the lessons of each step go to agents-skills#560 (skill design-study) and, for Penpot, agents-skills#556.
 - Next: #136 (audit of the current dashboard).
