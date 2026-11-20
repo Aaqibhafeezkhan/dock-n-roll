@@ -40,13 +40,13 @@ Owner rule (2026-10-22, restated 2026-11-20). It ranks above every other design 
 
 - The redesign code: separate bricks after the study (epic #134).
 - Generating `tokens.css` from the Penpot tokens (#129).
-- The tray menu: a native GNOME menu, out of the study (owner MCDA 2026-11-20).
+- The tray menu: a native GNOME menu, out of the study (owner MCDA, multi-criteria decision analysis, 2026-11-20).
 - New service types (shell commands, `systemd --user` units), other operating systems, other users.
 - A marketing page or any Persuade surface.
 
 ## Scope
 
-Owner MCDA (multi-criteria decision analysis) 2026-11-20: option B, 435/500, against 400 (B plus the tray menu) and 355 (current screens only).
+Owner MCDA 2026-11-20: option B, 435/500, against 400 (B plus the tray menu) and 355 (current screens only).
 
 - The current screens: service list with groups, Running tab, logs, banners.
 - The planned functions, designed with them: stop all (#41), service actions menu (#61), and the request for logs in their own window (#68, open question Q4).
@@ -86,7 +86,7 @@ Must: without it the redesign fails. Should: designed in the study, may be coded
 | D3 | Docker unavailable said clearly on every screen | Must | #88, #91 |
 | O1 | Search or filter | Nice | |
 | O2 | Pin, hide, rename, group from the interface instead of the YAML file | Nice | |
-| Q1 | Keyboard, 200 % zoom, narrow window, light and dark themes, WCAG (Web Content Accessibility Guidelines) 2.2 level AA | Must | #89, #127, #132 |
+| X1 | Keyboard, 200 % zoom, narrow window, light and dark themes, WCAG (Web Content Accessibility Guidelines) 2.2 level AA | Must | #89, #127, #132 |
 
 ## Pain points of the current dashboard
 
@@ -110,7 +110,7 @@ Evidence: the reference screenshots under `reference/` and the open issues. The 
 - **Window**: no horizontal scroll and no clipped content from 320 to 960 px wide, and at 200 % zoom (WCAG 2.2 success criteria 1.4.4 Resize text and 1.4.10 Reflow).
 - **Themes**: light and dark, following `prefers-color-scheme`.
 - **Accessibility**: WCAG 2.2 AA; a status never relies on colour alone; every action reachable by keyboard.
-- **Minimal and dynamic**: the leading principle above applies to every screen, the logs window and the dialogs included.
+- **Minimal and dynamic**: the leading principle above applies to every screen, the logs view and the dialogs included.
 - **Tokens**: one source. `tokens.css` is the master until #129; the new direction is recorded as Penpot tokens (#141).
 - **Branding**: no dock-n-roll brand rules exist; the study creates them (#140).
 - **Design tool**: Penpot, self-hosted; exports, tokens JSON and `.penpot` file versioned under `docs/architecture/design/` at each step.
@@ -127,7 +127,7 @@ They describe behaviour, not appearance. The study may propose to reopen one, as
 | With Docker unreachable: an app-level banner, rows greyed without a status badge | spec § 4 |
 | Logs: text only, read-only, last 500 lines then follow | spec UC7, ADR-0008 |
 | Logs open in a dashboard panel, not in a window (ADR-0008, 435 against 315). #68 asks to reopen it: open question Q4; the decision stays until the owner rules on it. | ADR-0008, #68 |
-| The pin file is edited by hand. Need O2 (Nice, owner 2026-11-20) keeps a place for editing in the interface; the decision stays until the owner rules on it. | spec § 2 |
+| The pin file is edited by hand. Need O2 (Nice, owner 2026-11-20) keeps a place for editing in the interface: open question Q8; the decision stays until the owner rules on it. | spec § 2 |
 | Every action is reachable from the tray menu, except the logs (dashboard only, UC7). The tray entries of new actions (A3, A5) are added by the code bricks: the native menu is not designed here. | spec § 6 R5, UC7 |
 | A failed action shows its reason on its row and is announced | #85 |
 
@@ -175,3 +175,4 @@ One issue and one chat per step; each ends with a versioned deliverable and the 
 | Q5 | Where do "stop all" (#41) and the actions menu (#61) live? | #138, #139 |
 | Q6 | Font: bundled family or system font? | #140 |
 | Q7 | Threshold of the `ui-review` score and how it is measured on mockups (S8) | #142 |
+| Q8 | Pin editing in the interface (O2): does the hand-edited pin file stay? | #138 |
