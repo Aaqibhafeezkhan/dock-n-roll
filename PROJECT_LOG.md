@@ -641,3 +641,14 @@ Sensitivity: C and A stay top two and G last under value 45 or effort 35; E pass
 - Unblocked `just check`: a global `tag.gpgSign=true` signed the "unsigned" tag of `scripts/test-attest.sh` (owner MCDA: fix in this PR 435 vs separate PR 430 vs drop the global setting 265); the test repo now sets `tag.gpgSign false`.
 - ADR-0010 lists the reflow check; layout checks jsdom cannot see live in the smoke.
 - Next: #127 (name squeezed between 460 and 540 px, found by the adversarial review, pre-existing), then #41 + #61 (+ #57).
+
+## 2026-11-20 — #128: the current dashboard captured in Penpot
+
+- #84 merged as PR #130 (merge `e72bcde`); the gate has no doc-coverage counter, tracked in #131.
+- Step 1 of the Penpot design study (owner rule 2026-11-20): the existing dashboard is reproduced in the self-hosted Penpot 2.19.3, `tokens.css` stays master. Step 2 (#129, Penpot master, generated CSS) waits for the agents-skills#554 verdict.
+- Penpot file: 3 token sets (`global`, `color/light`, `color/dark`, 39 tokens), 2 themes, 4 components (status badge, action button, service row, group section), 10 screen frames (service list, logs panel, Running tab, banners at 960 and 320 px; service list also in dark).
+- Owner MCDA: MCP driven by a Bash script (420); 10 frames, 4 screens × 2 widths in light plus the service list in dark (435). The tray menu is not covered.
+- Each frame is compared with the packaged app on fixtures (fake Docker daemon, temporary pin file); note with side-by-side images and the known differences: `docs/architecture/design/dashboard-capture.md`.
+- MCP findings: PNG/SVG export works; no native tokens JSON export in the plugin API (taken from the `.penpot` archive); `File.export` fails in 2.19.3, the `.penpot` file is downloaded from the browser menu. Lessons reported in agents-skills#556.
+- Docs only: no source, test or export changes.
+- Next: #131 (doc coverage in the gate), #127, then #129 after the #554 verdict.
