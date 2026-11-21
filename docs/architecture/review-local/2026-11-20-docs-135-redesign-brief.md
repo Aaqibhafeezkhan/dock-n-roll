@@ -15,17 +15,18 @@ Pre-push review of the dashboard redesign brief for issue #135, three adversaria
 - Round 3 on `bb91f5a`: 4 fixed · 0 not fixed · 0 regressed · new Must 0 · **Push gate: open**
 - Optional second review (owner's own account): not run (never a gate step)
 
-## Pre-merge gate (head SHA: filled by the pre-merge run)
+## Pre-merge gate (checked SHA `f1f617c`)
 
 | Step | Result |
 |---|---|
-| 1 Tests | ✅ `mise x -- just check` exit 0 on `1604151`: 660 unit/integration · `test-local-ci` 64 · `test-attest` 22 |
-| 2 Coverage | tests 97.33 % stmts / 92.81 % branches / 97.95 % funcs / 98.6 % lines (floor 80) · docs ⏸ deferred to the pre-merge run |
-| 3 SonarQube | ⏸ deferred to the pre-merge run |
+| 1 Tests | ✅ `mise x -- just gate` exit 0 on `f1f617c`: 660 unit/integration |
+| 2 Coverage | tests 97.33 % stmts / 92.81 % branches / 97.95 % funcs / 98.6 % lines (floor 80) · docs ⚠️ not run: `just gate` does not hold the doc counter (#131; 72.1 % by hand, under the 90 % floor) |
+| 3 SonarQube | ✅ PASSED |
 | 4 Secrets | ✅ gitleaks clean · no tracked `.env` · diff read: nothing sensitive (workstation volumes as counts only, no project name) |
-| 5 E2E/smoke | ⏸ deferred to the pre-merge run |
+| 5 E2E/smoke | ✅ smoke 16 ok on the local prod build · QA pass: none, docs-only change |
 
-- Gate: **pre-push green** — `just check` passed on `1604151`; the later commits change `brief.md` and `PROJECT_LOG.md` only. SonarQube, doc coverage and E2E/smoke deferred to `just gate` on the pushed head.
+- Gate: **attested with one step not run** — `sh scripts/attest.sh verify gate f1f617c` passed; doc coverage not run (#131), so the merge waits for the owner's answer. The attested head is the report-only commit after `f1f617c`.
+- PR conversation: two automated notices (review not completed, usage limit), no finding, no inline comment.
 - CI mirror: no `pull_request` workflow (ADR-0011), n/a.
 
 ## 🔴 Must Have
