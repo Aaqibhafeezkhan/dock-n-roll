@@ -21,7 +21,7 @@ Screenshots: [`audit/`](audit/), named `<screen>-<width>-<theme>[-forced][-fold]
 
 ## Scores
 
-Scale 0 to 5: 0 absent, 1 broken, 2 weak, 3 adequate, 4 good, 5 excellent. Eight axes, total out of 40: the ninth dimension of skill `ui-review` (generic-template tells) is not checked, since the look is replaced (brief § Ambition) and pain point 8 of the brief covers it. A later `ui-review` score out of 45 (S8, Q7) is compared axis by axis, not on the total.
+Scale 0 to 5: 0 absent, 1 broken, 2 weak, 3 adequate, 4 good, 5 excellent. Eight axes, total out of 40: the ninth dimension of skill `ui-review` (template tells, `bans.md`) is not checked, since the look is replaced (brief § Ambition) and pain point 8 of the brief covers it. A later `ui-review` score out of 45 (S8, Q7) is compared axis by axis, not on the total.
 
 | Axis | Score | Evidence in one line |
 |---|---|---|
@@ -190,7 +190,7 @@ Owner MCDA 2026-11-22: **B, 720 × 640 px, 430/500**, against 390 (A, 720 × 520
 
 - The mockups target a default window of 720 × 640 px; the reference widths are 320 px (reflow floor), 720 px (default) and 960 px (wide check); 360 × 320 px stands for 200 % zoom.
 - The window size itself changes in `src/main/index.ts` with the first code brick, not in the study.
-- Sensitivity: with the footprint at 35 and S1 at 15, A scores 435 and B 430: A leads. B holds as long as S1 weighs more than the footprint, which is the ranking of the brief (task 1, criterion S1).
+- Sensitivity: with the footprint at 35 and S1 at 15, A scores 435 and B 430: A leads. B leads as long as the footprint weighs less than twice S1 (B − A = 2 × S1 − footprint; here 35 > 2 × 15). The validated weights (30 and 20) follow the ranking of the brief (task 1, criterion S1).
 
 ### Q2: services visible without scrolling (S1)
 
