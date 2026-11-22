@@ -15,20 +15,21 @@ Pre-push review of the dashboard audit for issue #136, three adversarial rounds.
 - Round 3 on `7431a27`: 2 fixed · 0 not fixed · 0 regressed · new Must 0 · new Should 2 (figures of this report, fixed) · **Push gate: open**
 - Optional second review (owner's own account): not run (never a gate step)
 
-## Pre-merge gate
+## Pre-merge gate (head SHA `1eb79dd`)
 
-`--push` run: `mise x -- just check` exit 0 on `d7a7740` (docs-only commits since).
+`mise x -- just gate` exit 0 on `1eb79dd`; `mise x -- just check` exit 0 on `d7a7740` before the push.
 
 | Step | Result |
 |---|---|
-| 1 Tests | ✅ 660 unit/integration in 38 files; wiring tests 64 and 22 cases |
-| 2 Coverage | tests 97.33 % stmts / 92.81 % branches / 97.95 % funcs / 98.6 % lines (floor 80) · docs ⏸ deferred to the pre-merge run (not held by `just gate`, #131) |
-| 3 SonarQube | ⏸ deferred to the pre-merge run |
+| 1 Tests | ✅ 660 unit/integration in 38 files; wiring tests 64 and 22 cases; lint, typecheck, build, shellcheck and Semgrep green |
+| 2 Coverage | tests 97.33 % stmts / 92.81 % branches / 97.95 % funcs / 98.6 % lines (floor 80) · docs ⚠️ not run (not held by `just gate`, #131) |
+| 3 SonarQube | ✅ PASSED |
 | 4 Secrets | ✅ gitleaks clean (212 commits) · no tracked `.env` · diff read: nothing sensitive (demo stacks only in the screenshots, workstation volumes as counts, PNG files without metadata) |
-| 5 E2E/smoke | ⏸ deferred to the pre-merge run |
+| 5 E2E/smoke | ✅ 15 smoke checks on the local prod build (`.deb` packaged) · no `JRN-` test plan · QA pass: not applicable (docs only, no runtime change) |
 
-- Gate: **pre-push green** — `just check` passed; SonarQube, doc coverage and smoke deferred.
+- Gate: **GREEN except doc coverage, not run (#131)** — attested on `1eb79dd`; this report-only commit is gated again and is the attested head. The owner is asked before the merge.
 - CI mirror: no `pull_request` workflow (ADR-0011), n/a.
+- PR conversation: two automated notices from the Codex connector (review failed, usage limit), no finding and no inline thread; no reply, hosted review not re-triggered.
 
 ## 🔴 Must Have
 
