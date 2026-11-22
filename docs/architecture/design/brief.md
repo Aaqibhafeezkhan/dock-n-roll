@@ -11,9 +11,9 @@ The study is done in Penpot before any redesign code. It starts from the capture
 | User | One developer, the owner, on a single Ubuntu workstation (GNOME). No other user is targeted. |
 | Scene | A quick look: the dashboard is opened from the tray a few times a day, for one check or one action, then closed. It is not kept open. |
 | Device | Desktop screen, mouse and keyboard. No touch, no phone. |
-| Window | Opens at 720 × 520 px, resizable, no minimum size set (`src/main/index.ts`). |
+| Window | Opens at 720 × 520 px, resizable, no minimum size set (`src/main/index.ts`). The study targets 720 × 640 px (Q1). |
 | Light | Office, light or dark theme following the system. |
-| Volume, measured 2026-11-20 | 12 Compose projects (2 running), 7 pin-file entries, 4 groups, 1 hidden service; 24 containers outside Compose (11 running). |
+| Volume, measured 2026-11-20 | 12 Compose projects (2 running), 7 pin-file entries, 4 groups, 1 hidden service; 24 containers outside Compose (11 running). Measured again on 2026-11-22: 8 rows listed in 4 groups ([audit](2026-11-22-dashboard-audit.md) § Volume). |
 
 Surface mode (skill `ui-design` § 2): **Operate**. The user succeeds when the task is done; scanability, consistency and density come first.
 
@@ -90,14 +90,14 @@ Must: without it the redesign fails. Should: designed in the study, may be coded
 
 ## Pain points of the current dashboard
 
-Evidence: the reference screenshots under `reference/` and the open issues. The audit (#136) measures each one.
+Evidence: the reference screenshots under `reference/` and the open issues. The audit ([2026-11-22-dashboard-audit.md](2026-11-22-dashboard-audit.md), #136) measures each one.
 
 | # | Pain point | Evidence |
 |---|---|---|
 | 1 | The state is the least visible thing: a 10 px badge, the status in muted text, the summary ("1 of 5 on") in the top right corner. | `reference/service-list-960-light.png` |
 | 2 | Crowded rows: four or five buttons each, zero to three of them disabled. Five services show 21 controls. | same |
 | 3 | Inverted hierarchy: the black Start button draws the eye before the status. | same |
-| 4 | At 320 px a row takes three levels; five services need 981 px, so the list scrolls. Between 460 and 540 px the name is squeezed. | `reference/service-list-320-light.png`, #127 |
+| 4 | At 320 px a row takes three levels; five services need 981 px, so the list scrolls. Between 460 and 540 px the name is squeezed (440 to 600 px measured by the audit). | `reference/service-list-320-light.png`, #127 |
 | 5 | Groups: "Start all" and "Stop all" always visible, on a line of their own under the group title. | `reference/service-list-960-light.png` |
 | 6 | Running tab: two raw tables, no sort, no filter, no link to the services; it overflows at 320 px. | `reference/running-tab-960-light.png`, #132 |
 | 7 | States not designed: Docker unavailable, empty log stream, logs opened in the middle of the buffer; hover, focus, empty and loading are not captured. | #88, #91, #82, #64 |
@@ -139,7 +139,7 @@ The status colour code (green on, red off, orange transitional, grey unavailable
 
 | # | Criterion | Measure |
 |---|---|---|
-| S1 | State read in 2 seconds | At the default window size, the global state and every service in fault are visible without scrolling, for the services measured on the workstation (the row count is fixed at the audit, Q2). |
+| S1 | State read in 2 seconds | At the default window size, the global state and every service in fault are visible without scrolling, for 8 services in 4 groups, the volume measured on the workstation (Q1, Q2). |
 | S2 | Minimal at rest | At rest, at most 2 visible controls per service row (4 to 5 today) and no disabled control on screen. |
 | S3 | Actions stay close | Every action of the Must and Should needs is at most 2 clicks away from the open dashboard. |
 | S4 | Every state designed | Each screen has its empty, loading, error, Docker-unavailable, hover and focus states in the mockups. |
@@ -168,8 +168,8 @@ One issue and one chat per step; each ends with a versioned deliverable and the 
 
 | # | Question | Settled at |
 |---|---|---|
-| Q1 | Reference widths: the capture used 960 and 320 px, the window opens at 720 × 520 px. Which sizes do the mockups target, and does the default size change? | #136 |
-| Q2 | How many services must be visible without scrolling (S1)? | #136 |
+| Q1 | Reference widths: the capture used 960 and 320 px, the window opens at 720 × 520 px. Which sizes do the mockups target, and does the default size change? **Settled 2026-11-22: default 720 × 640 px; widths 320, 720 and 960 px ([audit](2026-11-22-dashboard-audit.md)).** | #136 |
+| Q2 | How many services must be visible without scrolling (S1)? **Settled 2026-11-22: 8, in 4 groups ([audit](2026-11-22-dashboard-audit.md)).** | #136 |
 | Q3 | Does the Running tab stay a tab, or do containers and ports join the service list? | #138 |
 | Q4 | Logs: own window, inline panel, or both (#68)? | #138 |
 | Q5 | Where do "stop all" (#41) and the actions menu (#61) live? | #138, #139 |

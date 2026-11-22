@@ -670,3 +670,17 @@ Sensitivity: C and A stay top two and G last under value 45 or effort 35; E pass
 - Docs only: no source or test changes, no Penpot work.
 - Owner rule for the epic: the lessons of each step go to agents-skills#560 (skill design-study) and, for Penpot, agents-skills#556.
 - Next: #136 (audit of the current dashboard).
+
+## 2026-11-22 — #136: the audit of the current dashboard
+
+- #135 merged as PR #143 (merge `c90c54b`).
+- Step 2 of the design study (epic #134): `docs/architecture/design/2026-11-22-dashboard-audit.md`, 17 screenshots under `docs/architecture/design/audit/`.
+- Owner MCDA on the method: fake Docker daemon for screenshots and measures, read-only count on the real Docker for the figures (445, vs 430 for the fake daemon alone and 285 for real demo stacks).
+- Measured on the packaged build (own instance under Xvfb, demo stacks): overflow, targets, fonts, contrast, rows above the fold, from 320 to 960 px, light, dark and forced colours; every status, failure, pin errors, empty, Docker down, logs.
+- Score 18/40 on eight axes; 35 findings, 11 Must, 19 Should, 5 Nice. The default window shows 3 services of 8; 40 % of the buttons are disabled at rest; the name is squeezed from 440 to 600 px; zoom is not reachable; red marks "stopped" as well as "failed".
+- Issues: #127, #132, #88 point 1, #89, #91 and #82 confirmed; #64 not reproduced (fast backlog only); #88 point 2 obsolete since #98.
+- Workstation today: 11 Compose projects, 8 rows listed in 4 groups, 19 containers outside Compose, 27 listening ports.
+- Owner MCDA, Q1: the study targets a default window of 720 × 640 px, widths 320, 720 and 960 px (430, vs 390 for 720 × 520 and 375 for 960 × 640). Q2: 8 services visible without scrolling (420, vs 380 for 10 and 295 for 12). Both recorded in the brief.
+- Pre-push review: three adversarial rounds, gate open; 2 Must fixed (the Q1 sensitivity check was wrong: A leads when the footprint weighs more than twice S1; follow-up lists incomplete). The owner confirmed B for Q1 with the corrected check. Two Nice left in #145.
+- Docs only: no source or test changes, no Penpot work.
+- Next: #137 (benchmark of comparable container dashboards).
