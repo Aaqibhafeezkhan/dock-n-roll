@@ -3,16 +3,16 @@
 Pre-push review of the dashboard audit for issue #136, three adversarial rounds.
 
 - Date: 2026-11-22
-- Commit: see round 3 below
+- Commit: `7431a27`
 - Scope: branch diff `origin/main...HEAD` (docs only: `docs/architecture/design/2026-11-22-dashboard-audit.md`, 17 screenshots under `docs/architecture/design/audit/`, `docs/architecture/design/brief.md`, `PROJECT_LOG.md`)
 - Checks run: adversarial (fresh reviewer, 3 rounds) · docs · security (secrets) · correctness; design, tests and containers not applicable (no source, test or container file changed)
-- Verdict: ship as-is · Must 0 · Should 0 open · Nice 2 open, filed as an issue (Must 2, Should 13, Nice 11 raised)
+- Verdict: ship as-is · Must 0 · Should 0 open · Nice 2 open, filed as #145 (Must 2, Should 13, Nice 11 raised)
 
 ## Adversarial review (#236)
 
-- Round 1 on `d7a7740`: Must 2 · Should 8 · Nice 7 · unverified 3 · Push gate: closed
+- Round 1 on `d7a7740`: Must 2 · Should 9 · Nice 7 · unverified 3 · Push gate: closed
 - Round 2 on `db0659d`: 17 fixed · 0 regressed · 2 Nice not applied (hover artefacts on three screenshots, volume reconciliation) · new Must 0 · new Should 1 · new Nice 1 · Push gate: open
-- Round 3: see the line added by the next commit
+- Round 3 on `7431a27`: 2 fixed · 0 not fixed · 0 regressed · new Must 0 · new Should 2 (figures of this report, fixed) · **Push gate: open**
 - Optional second review (owner's own account): not run (never a gate step)
 
 ## Pre-merge gate
@@ -56,7 +56,7 @@ All fixed in `db0659d` unless noted.
 ## 🔵 Nice to Have
 
 - Fixed in `db0659d`: screenshot naming rule, F28 base, F15 badge range, F18 severity (Nice: no touch device), `brief.md:100` range, acronyms (WCAG, MCDA) defined; the name of the ninth axis fixed after round 2.
-- Open, filed as an issue: hover artefacts on `list-720-light-fold.png`, `list-500-light.png` and `squeeze-480-light-fold.png`; the volume figures (11 projects, 4 hidden, 8 rows, 10 pin entries) are not reconciled in the text.
+- Open, filed as #145: hover artefacts on `list-720-light-fold.png`, `list-500-light.png` and `squeeze-480-light-fold.png`; the volume figures (11 projects, 4 hidden, 8 rows, 10 pin entries) are not reconciled in the text.
 
 ## ⚪ Disagree / Intentional
 
