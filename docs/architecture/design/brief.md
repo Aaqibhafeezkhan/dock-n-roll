@@ -13,7 +13,7 @@ The study is done in Penpot before any redesign code. It starts from the capture
 | Device | Desktop screen, mouse and keyboard. No touch, no phone. |
 | Window | Opens at 720 × 520 px, resizable, no minimum size set (`src/main/index.ts`). The study targets 720 × 640 px (Q1). |
 | Light | Office, light or dark theme following the system. |
-| Volume, measured 2026-11-20 | 12 Compose projects (2 running), 7 pin-file entries, 4 groups, 1 hidden service; 24 containers outside Compose (11 running). |
+| Volume, measured 2026-11-20 | 12 Compose projects (2 running), 7 pin-file entries, 4 groups, 1 hidden service; 24 containers outside Compose (11 running). Measured again on 2026-11-22: 8 rows listed in 4 groups ([audit](2026-11-22-dashboard-audit.md) § Volume). |
 
 Surface mode (skill `ui-design` § 2): **Operate**. The user succeeds when the task is done; scanability, consistency and density come first.
 
@@ -97,7 +97,7 @@ Evidence: the reference screenshots under `reference/` and the open issues. The 
 | 1 | The state is the least visible thing: a 10 px badge, the status in muted text, the summary ("1 of 5 on") in the top right corner. | `reference/service-list-960-light.png` |
 | 2 | Crowded rows: four or five buttons each, zero to three of them disabled. Five services show 21 controls. | same |
 | 3 | Inverted hierarchy: the black Start button draws the eye before the status. | same |
-| 4 | At 320 px a row takes three levels; five services need 981 px, so the list scrolls. Between 460 and 540 px the name is squeezed. | `reference/service-list-320-light.png`, #127 |
+| 4 | At 320 px a row takes three levels; five services need 981 px, so the list scrolls. Between 460 and 540 px the name is squeezed (440 to 600 px measured by the audit). | `reference/service-list-320-light.png`, #127 |
 | 5 | Groups: "Start all" and "Stop all" always visible, on a line of their own under the group title. | `reference/service-list-960-light.png` |
 | 6 | Running tab: two raw tables, no sort, no filter, no link to the services; it overflows at 320 px. | `reference/running-tab-960-light.png`, #132 |
 | 7 | States not designed: Docker unavailable, empty log stream, logs opened in the middle of the buffer; hover, focus, empty and loading are not captured. | #88, #91, #82, #64 |

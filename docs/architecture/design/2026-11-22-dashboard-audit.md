@@ -10,24 +10,25 @@ The audit judges; it fixes nothing. Each finding names the study step that takes
 |---|---|
 | Build | Packaged app (`dist/linux-unpacked`, `main` at `c90c54b`), its own instance under Xvfb, driven over the Chrome DevTools Protocol. |
 | Data | A fake Docker Engine on a Unix socket, a fake `ss`, a temporary pin file. Demo stacks only: no screenshot shows a real project. |
-| Fixtures | `main`: 10 rows, 2 groups, every status, one long name. `mirror`: the 8 rows and 4 groups listed on the workstation today, same name lengths, neutral names. `peak`: 12 rows, 4 groups (the volume of the brief). Also: empty, pin-file errors, Docker down (at start, and while open). |
+| Fixtures | `main`: 10 rows, 2 groups, every status, one long name. `mirror`: the 8 rows and 4 groups listed on the workstation today, same name lengths, neutral names. `peak`: 12 rows, 4 groups (one row per Compose project of the brief). Also: empty, pin-file errors, Docker down (at start, and while open). |
 | Sizes | 320, 360 × 260 (the 200 % equivalent of 720 × 520), 440 to 680 by steps of 20, 720 × 520 (default), 960 × 640; light, dark, forced colours. |
 | Measures | In-page script: bounding boxes, overflow, target sizes, computed fonts, contrast of every text and badge pair, rows above the fold, tab stops. |
 | Real volume | Read-only count on the workstation's Docker, figures only. |
+| Method choice | Owner MCDA (multi-criteria decision analysis) 2026-11-22: fake daemon plus a read-only count on the real Docker, 445/500, against 430 (fake daemon alone) and 285 (real demo stacks). |
 | Surface mode | Operate (brief § Users and use scene). |
 
-Screenshots: [`audit/`](audit/), named `<screen>-<width>-<theme>[-forced][-fold].png`; `-fold` is the window as opened, the others are the full page.
+Screenshots: [`audit/`](audit/), named `<screen>-<width>-<theme>[-forced][-fold].png`; `-fold` is one window height (scrolled for the logs), the others are the full page (`focus-720-light.png` is one window height too).
 
 ## Scores
 
-Scale 0 to 5: 0 absent, 1 broken, 2 weak, 3 adequate, 4 good, 5 excellent.
+Scale 0 to 5: 0 absent, 1 broken, 2 weak, 3 adequate, 4 good, 5 excellent. Eight axes, total out of 40: the ninth dimension of skill `ui-review` (generic-template tells) is not checked, since the look is replaced (brief § Ambition) and pain point 8 of the brief covers it. A later `ui-review` score out of 45 (S8, Q7) is compared axis by axis, not on the total.
 
 | Axis | Score | Evidence in one line |
 |---|---|---|
 | Hierarchy | 2 | The state is the smallest thing on a row; the black Start button is the largest. |
 | Typography | 2 | One system family, three sizes in `px` (13, 14, 20), name and status at the same size. |
 | Layout | 2 | 3 rows of 8 above the fold at the default size; 187 px of chrome before the first row. |
-| Colour | 3 | Every text pair passes AA (lowest 5.11:1); red marks a stopped service as well as a failure; no identity. |
+| Colour | 3 | Every text pair passes WCAG (Web Content Accessibility Guidelines) 2.2 level AA (lowest 5.11:1); red marks a stopped service as well as a failure; no identity. |
 | States | 2 | Failure, pending and pin errors exist; loading, empty logs and Docker-down on the Running tab do not. |
 | Motion | 2 | No transition or animation at all: nothing harms, nothing helps a state change to be seen. |
 | Accessibility | 3 | Landmarks, live announcements, keyboard and focus are there; zoom is impossible, targets are 30 px high. |
@@ -42,12 +43,12 @@ Scale 0 to 5: 0 absent, 1 broken, 2 weak, 3 adequate, 4 good, 5 excellent.
 | S2 Minimal at rest | Not met | 4 or 5 controls per row. `main`: 48 buttons, 19 disabled (40 %). `mirror`: 45 buttons, 14 disabled. |
 | S3 Actions stay close | Met for what exists | Start, stop, restart, logs, open, group start and stop: 1 click. Other container in the logs: 2. A3 (stop everything) does not exist: one click per group and per ungrouped row, up to 7 on `mirror`. A5 does not exist. |
 | S4 Every state designed | Not met | Missing: loading, empty log stream, Docker down on the Running tab. Hover exists on rows and buttons; focus exists. |
-| S5 Accessible | Partly | Contrast passes; findings F17 to F23 remain. |
+| S5 Accessible | Partly | Text contrast passes; the focus ring of the group toggle is under 3:1 (F20), badges vanish in forced colours (F16); findings F17 to F23 remain. |
 | S6 Reflow | Not met | Services tab: no horizontal overflow from 320 to 960 px, but the name column collapses (F9). Running tab: 22 px cut at 320 px (F12). 200 % zoom: not reachable (F17). |
 
 ## Findings
 
-Severity (skill `ui-review`): **Must** breaks a Must need or a WCAG 2.2 AA criterion; **Should** weakens a need; **Nice** is polish. "Step" is the study step that settles it.
+Severity (skill `ui-review`): **Must** breaks a Must need or a WCAG 2.2 AA criterion; **Should** weakens a need; **Nice** is polish. "Step" is the study step that settles it. The IDs follow the order of discovery, not the order of the page.
 
 ### Hierarchy
 
@@ -63,7 +64,7 @@ Severity (skill `ui-review`): **Must** breaks a Must need or a WCAG 2.2 AA crite
 | # | Severity | Evidence | Finding | Need | Step |
 |---|---|---|---|---|---|
 | F5 | Should | Computed fonts: 20 px/700 (title), 14 px/400 and 600, 13 px/400; `system-ui` (Noto Sans here), `ui-monospace` falls back to DejaVu Sans Mono. | Three sizes, two of them 1 px apart: the scale carries no hierarchy; weight alone separates name from status. | V2, goal 6 | #140 |
-| F6 | Must | Every size in `px`; root 16 px. | Sizes do not follow a user font setting. With F17, text cannot be enlarged at all. | X1 | #141 |
+| F6 | Must | Every size in `px`; root 16 px. | Sizes do not follow a user font setting. With F17, text cannot be enlarged from the app; GNOME text and display scaling were not tested. | X1 | #141 |
 
 ### Layout
 
@@ -82,9 +83,9 @@ Severity (skill `ui-review`): **Must** breaks a Must need or a WCAG 2.2 AA crite
 | # | Severity | Evidence | Finding | Need | Step |
 |---|---|---|---|---|---|
 | F14 | Should | `mirror` at rest: 6 red badges of 8, none in fault. Failure text uses the same red family (`#cf222e`). | Red means "stopped" and "failed". At a glance a healthy workstation looks broken, and a real fault does not stand out. | V1 | #140 |
-| F15 | Nice | Grey badge 3.04:1 on white (light), 4.12:1 (dark); other badges 4.2 to 7.5:1. Text pairs: 5.11 to 16.3:1 in both themes. | Contrast passes AA everywhere; the grey badge has no margin. | X1 | #141 |
+| F15 | Nice | Grey badge 3.04:1 on white (light), 4.12:1 (dark); other badges 5.0 to 7.5:1. Text pairs: 5.11 to 16.3:1 in both themes. `audit/states-720-dark.png` | Contrast passes AA everywhere; the grey badge has no margin. | X1 | #141 |
 | F16 | Should | Forced colours: badge fill equals the background (1:1). `audit/list-720-light-forced-fold.png` | Badges vanish in forced colours; the status word keeps the meaning, so no information is lost. | X1 | #141 |
-| — | — | `tokens.css`: neutral greys, GitHub-like status hues. | No colour belongs to dock-n-roll (pain point 8). | goal 6 | #140 |
+| — | — | `tokens.css`: neutral greys, GitHub-like status hues. | No colour belongs to dock-n-roll (brief § Pain points, 8). | goal 6 | #140 |
 
 ### States
 
@@ -95,7 +96,7 @@ Severity (skill `ui-review`): **Must** breaks a Must need or a WCAG 2.2 AA crite
 | F25 | Must | Empty stream: a blank grey bar 16 px high, no text. `audit/logs-empty-720-light-fold.png` | An empty log stream is not announced (#82 confirmed). | D2 | #142 |
 | F26 | Should | No loading output seen in any scenario: the first paint already has rows or the banner. | The loading state exists in code and is never visible; it is not designed. | goal 5 (S4) | #142 |
 | F27 | Should | Failed start: reason on the row after 1.1 s, red, row 65 → 158 px, text "Start failed: Container blog-web-1 Starting Error response from daemon: …". `audit/states-720-light.png` | The reason is on the row (D1 met) but raw: Compose progress lines come before the cause. | D1 | #142 |
-| F28 | Should | Pin-file errors: 4 banners, chrome 187 → 296 px (394 px at 320). Text "services[0].colour: unknown key". `audit/pin-errors-720-light-fold.png` | One banner per error pushes the list down; the wording is the parser's, with no file name or line. | goal 5 | #138, #142 |
+| F28 | Should | Pin-file errors: 4 banners: 296 px before the first row (394 px at 320), against about 122 px with no banner and no group. Text "services[0].colour: unknown key". `audit/pin-errors-720-light-fold.png` | One banner per error pushes the list down; the wording is the parser's, with no file name or line. | goal 5 | #138, #142 |
 | F29 | Nice | Empty list: "No Compose project found." in muted text, no next step. `audit/empty-720-light-fold.png` | The empty state does not say what to do. | goal 5 | #142 |
 | F30 | Nice | Pending: status word "starting"/"stopping", orange badge, every button but Logs disabled. | Progress is a word change only. | V2 | #140 |
 
@@ -110,11 +111,11 @@ Severity (skill `ui-review`): **Must** breaks a Must need or a WCAG 2.2 AA crite
 | # | Severity | Evidence | Finding | Need | Step |
 |---|---|---|---|---|---|
 | F17 | Must | `Ctrl+=`, `Ctrl+Shift+=`, `Ctrl+NumpadAdd`: device pixel ratio stays 1, inner width stays 720. | Zoom is not reachable (#89 confirmed): WCAG 1.4.4 fails. | X1 | #142 (code brick) |
-| F18 | Should | Buttons 56 to 76 × 30 px; tabs 56 × 38 px. | Targets pass the 24 px minimum (2.5.8) and stay under the 44 px comfort size. | X1 | #141 |
+| F18 | Nice | Buttons 56 to 76 × 30 px; tabs 56 × 38 px. | Targets pass the 24 px minimum (2.5.8); the 44 px touch size does not apply (mouse and keyboard only). | X1 | #141 |
 | F19 | Should | Group `summary`: 657 × 20 px. Logs container `select`: 92 × 19 px. | Two targets under 24 px high; they pass 2.5.8 only by the spacing exception. | X1 | #141 |
-| F20 | Should | `summary` focus: browser default `outline: auto 1px rgb(229, 151, 0)`, 2.4:1 on white. Buttons: `2px solid` foreground, offset 2 px. `audit/focus-720-light.png` | The group toggle has a weaker focus ring than the buttons and fails 3:1 in the light theme. | X1 | #141 |
+| F20 | Should | `summary` focus: browser default `outline: auto 1px rgb(229, 151, 0)`, 2.4:1 on white (computed style, not a rendered capture). Buttons: `2px solid` foreground, offset 2 px (`audit/focus-720-light.png`). | The group toggle has a weaker focus ring than the buttons and is under 3:1 in the light theme. | X1 | #141 |
 | F21 | Should | Two rows named "notes" (name conflict): both buttons are "Logs of notes". | Duplicate accessible names: a screen reader cannot tell the two rows apart. | X1 | #142 |
-| F22 | Should | `main`: 32 tab stops (1 tab list, 2 group toggles, 29 enabled buttons) to reach the last row; no skip, no arrow-key movement in the list. | Keyboard reach is complete but linear. | X1 | #138 |
+| F22 | Should | `main`: 30 tab stops (1 tab list, 2 group toggles, 27 enabled action buttons) to reach the last row; no skip, no arrow-key movement in the list. | Keyboard reach is complete but linear. | X1 | #138 |
 | F23 | Nice | `title` tooltips only on the folder and on shortened reasons. | Hover-only text, not reachable by keyboard. | X1 | #142 |
 | — | — | `lang="en"`, one `h1`, `main`, tab list, tab panel, `role="alert"` banners, polite status region ("Blog: Start failed: …" announced). Status never by colour alone. | Kept as it is: the structure is sound. | X1 | — |
 
@@ -122,9 +123,9 @@ Severity (skill `ui-review`): **Must** breaks a Must need or a WCAG 2.2 AA crite
 
 | # | Severity | Evidence | Finding | Need | Step |
 |---|---|---|---|---|---|
-| F32 | Must | Name of 41 characters: 2 lines at 720 px (row 103 px), 7 at 500, 11 at 480, 27 at 460, 38 at 440 (row 899 px). | No truncation rule: the longest name sets the row height (with F9). Real names today: 5 to 24 characters. | V2, X1 | #139, #141 |
+| F32 | Must | Name of 43 characters: 2 lines at 720 px (row 103 px), 7 at 500, 11 at 480, 27 at 460, 38 at 440 (row 899 px). | No truncation rule: the longest name sets the row height (with F9). Real names today: 5 to 24 characters. | V2, X1 | #139, #141 |
 | F33 | Should | Logs: 500 lines kept, long lines wrap, monospace 13 px, panel 316 px. Opens on the newest line and stays there on new output. `audit/logs-chatty-720-light-fold.png` | #64 (logs open in the middle) is not reproduced on this build. Caveat: the fixture sent the backlog in one write; a slow backlog was not tested. | D2 | #142 (re-test) |
-| F34 | Should | Running tab, 720 px: a 41-character container name takes 3 lines; "running" and "exited" break after 6 letters. `audit/running-720-light-fold.png` | Column widths ignore their content. | V4 | #139 |
+| F34 | Should | Running tab, 720 px: a 52-character container name takes 3 lines; "running" and "exited" break after 5 letters. `audit/running-720-light-fold.png` | Column widths ignore their content. | V4 | #139 |
 
 ## Issues folded in
 
@@ -149,7 +150,7 @@ The audit proposes; the owner decides at the step named. Nothing is reopened sil
 | Status colour code: red for off (spec § 4; already open to change in the brief) | F14 | Reserve the alarm colour for a fault; a stopped service gets a neutral treatment. Step #140. |
 | Logs in a dashboard panel (ADR-0008) | F11 | Evidence for Q4: the panel leaves 204 px of list in the default window and opens below the fold for low rows. Step #138. |
 | With Docker unreachable: banner, rows greyed without a badge (spec § 4) | F24 | Keep; extend to the header and the Running tab, and word the banner for the user. Step #138. |
-| One banner per pin-file error (spec § 2) | F28 | Group them in one collapsible notice. Step #138. |
+| One banner per pin-file error (current behaviour; the spec only asks for a warning, § 9 Q1) | F28 | Group them in one collapsible notice. Step #138. |
 
 ## Volume measured on the workstation, 2026-11-22
 
@@ -172,7 +173,7 @@ Figures only. The brief was measured on 2026-11-20, before the clean-up of 2026-
 Evidence:
 
 - Height limits what is seen, not width: 720 × 520 shows 3 rows of 8, 960 × 640 shows 4, 720 × 900 shows 7.
-- At 720 px every row of the workstation fits on one line (names up to 24 characters); wider adds empty space between name and actions.
+- At 720 px every row of the workstation fits on one line (names up to 24 characters; the squeeze of F9 starts under 600 px); wider adds empty space between name and actions.
 - 320 px is the reflow floor of the brief; 360 × 260 is what 200 % zoom gives in the default window.
 - Row budget with a 90 px header and 24 px of bottom padding, 8 rows in 4 groups with 32 px group heads: 34 px per row at 520 px high, 49 px at 640, 59 px at 720.
 
@@ -189,7 +190,7 @@ Owner MCDA 2026-11-22: **B, 720 × 640 px, 430/500**, against 390 (A, 720 × 520
 
 - The mockups target a default window of 720 × 640 px; the reference widths are 320 px (reflow floor), 720 px (default) and 960 px (wide check); 360 × 320 px stands for 200 % zoom.
 - The window size itself changes in `src/main/index.ts` with the first code brick, not in the study.
-- Sensitivity: with the footprint at 35 and S1 at 15, A scores 405 and B 430; B stays first.
+- Sensitivity: with the footprint at 35 and S1 at 15, A scores 435 and B 430: A leads. B holds as long as S1 weighs more than the footprint, which is the ranking of the brief (task 1, criterion S1).
 
 ### Q2: services visible without scrolling (S1)
 
@@ -226,7 +227,7 @@ Owner MCDA 2026-11-22: **A, 8 services, 420/500**, against 380 (B, 10) and 295 (
 
 - #137 benchmark: compare on F1 to F4 (state first), F7 (density), F13 (containers and ports linked to services), F14 (colour of "stopped").
 - #138 information architecture: F3, F11, F13, F22, F24, F28 and Q3, Q4, Q5.
-- #139 wireframes: F2, F4, F7 to F10, F12, F32, F34, F35.
+- #139 wireframes: F1, F2, F4, F7 to F10, F12, F32, F34, F35.
 - #140 visual direction: F1, F5, F14, F30, F31.
-- #141 design system: F6, F15, F16, F18 to F20.
-- #142 mockups and specification: F17, F21, F23, F25 to F27, F29, F33.
+- #141 design system: F6, F15, F16, F18 to F20, F32.
+- #142 mockups and specification: F17, F21, F23 to F29, F33.
