@@ -681,5 +681,6 @@ Sensitivity: C and A stay top two and G last under value 45 or effort 35; E pass
 - Issues: #127, #132, #88 point 1, #89, #91 and #82 confirmed; #64 not reproduced (fast backlog only); #88 point 2 obsolete since #98.
 - Workstation today: 11 Compose projects, 8 rows listed in 4 groups, 19 containers outside Compose, 27 listening ports.
 - Owner MCDA, Q1: the study targets a default window of 720 × 640 px, widths 320, 720 and 960 px (430, vs 390 for 720 × 520 and 375 for 960 × 640). Q2: 8 services visible without scrolling (420, vs 380 for 10 and 295 for 12). Both recorded in the brief.
+- Pre-push review: three adversarial rounds, gate open; 2 Must fixed (the Q1 sensitivity check was wrong: A leads when the footprint weighs more than twice S1; follow-up lists incomplete). The owner confirmed B for Q1 with the corrected check. Two Nice left in #145.
 - Docs only: no source or test changes, no Penpot work.
 - Next: #137 (benchmark of comparable container dashboards).
