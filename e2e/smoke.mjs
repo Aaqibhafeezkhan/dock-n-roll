@@ -125,6 +125,32 @@ async function main() {
       check(overflow <= 0, `no horizontal scroll at ${width} px (#84)${overflow > 0 ? `: ${overflow} px over` : ''}`)
       check(fits.length === 5 && fits.every(Boolean), `the five actions fit at ${width} px (#84)`)
     }
+    // Issue #132: verify the Running tab reflows inside the app content box at narrow widths.
+    await page.getByRole('tab', { name: 'Running' }).click()
+    for (const { width, height } of [{ width: 320, height: 568 }, { width: 160, height: 568 }]) {
+      await page.setViewportSize({ width, height })
+      const reflow = await page.evaluate(() => {
+        const app = document.querySelector('.app')
+        const running = document.querySelector('.running')
+        if (!app || !running) return { missing: true, overflow: 0, violations: [], tables: 0 }
+        const style = getComputedStyle(app)
+        const appRect = app.getBoundingClientRect()
+        const contentLeft = appRect.left + parseFloat(style.paddingLeft)
+        const contentRight = appRect.right - parseFloat(style.paddingRight)
+        const elements = [running, ...running.querySelectorAll('*')].filter((element) => {
+          const rect = element.getBoundingClientRect()
+          return rect.width > 0 && rect.height > 0
+        })
+        const violations = elements.map((element) => {
+          const { left, right } = element.getBoundingClientRect()
+          return { tag: element.tagName, left, right }
+        }).filter(({ left, right }) => left < contentLeft - 0.5 || right > contentRight + 0.5)
+        return { missing: false, overflow: running.scrollWidth - running.clientWidth, violations, tables: running.querySelectorAll('table').length }
+      })
+      check(!reflow.missing, 'Running tab renders (#132)')
+      check(reflow.overflow <= 0, `Running tab has no horizontal overflow at ${width} px (#132)`)
+      check(reflow.violations.length === 0, `Running tab elements stay within app content at ${width} px (#132)`)
+    }
     // Checked before the 404 probe, which Chromium logs as a failed resource.
     check(errors.length === 0, `no console or CSP error${errors.length ? `: ${errors.join(' | ')}` : ''}`)
     const statusOf = (url) => page.evaluate((target) => fetch(target).then((response) => response.status), url)

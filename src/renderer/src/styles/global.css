@@ -276,6 +276,8 @@ button:focus-visible {
 
 .running table {
   width: 100%;
+  min-width: 0;
+  table-layout: fixed;
   border-collapse: collapse;
 }
 
@@ -290,6 +292,7 @@ button:focus-visible {
   font-size: var(--font-size-small);
   font-weight: 600;
   color: var(--color-muted);
+  overflow-wrap: anywhere;
 }
 
 .running td {
